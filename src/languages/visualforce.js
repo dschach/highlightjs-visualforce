@@ -4,6 +4,9 @@ Author: David Schach <dschach@x2od.com>
 Category: Salesforce, Force.com, Lightning Platform, Salesforce Platform
 Website: https://developer.salesforce.com/
 */
+
+import XML_HTML from '/Users/dschach/Documents/VSCode/highlight.js/src/languages/xml.js';
+
 /** @type LanguageFn */
 export default function (hljs) {
 	const regex = hljs.regex;
@@ -19,8 +22,10 @@ export default function (hljs) {
 	};
 	// TODO: Include the attribute with this
 	const GLOBAL_VARIABLES = {
-		begin: /(?:\b|\"|\{|\!})\$/,
-		end: /(?:\.)/,
+		//begin: /(?:\b|\"|\{|\!})\$\w/,
+		//end: /\./,
+		match: /\$\w+/ + regex.lookahead(/\./),
+
 		excludeEnd: true,
 		scope: "built_in",
 		relevance: 10
@@ -71,6 +76,15 @@ export default function (hljs) {
 		scope: 'operator',
 		relevance: 0
 	};
+
+	const VF_TYPES = [
+
+	];
+
+	const BUILT_INS = [
+
+	];
+
 	const ILLEGALS = [
 
 	];
@@ -95,139 +109,52 @@ export default function (hljs) {
 		begin: [/(?:(?<=<)|(?<=<\/))/, regex.either(...APEX_NAMESPACES), /:/, /\w+/],
 		end: '>',
 		excludeEnd: true,
-		scope: { 2: "keyword", 4: "keyword" }
+		scope: { 2: "keyword", 4: "keyword" },
+		relevance: 10
 	};
 
+	const MERGE_FIELDS = {
+		begin: '{!',
+		end: '}',
+		contains: {
+
+		}
+	}
+
 	const KEYWORDS = {
-		//$pattern: '[A-Za-z][0-9A-Za-z$_]*',
-		keyword: VF_TAGS,
+		$pattern: /\b\w+/,
+		//keyword: VF_TAGS,
 		//"variable.language": LANGUAGE_VARS,
-		//built_in: BUILT_INS,
-		//type: TYPES,
+		built_in: BUILT_INS,
+		type: VF_TYPES,
 		literal: LITERALS,
 		//operator: OPERATOR_REGEX
 	};
 
-	return {
-		name: "Visualforce",
-		aliases: ["vf", "visualforce"],
-		subLanguage: 'xml',
-		case_insensitive: true, // language is case-insensitive
-		disableAutodetect: false,
-		ignoreIllegals: false,
-		keywords: KEYWORDS,
-		illegal: ILLEGALS,
-		contains: [
-			/* {
-				begin: [/</, /apex/, /:/, /page/],
-				beginscope: { 2: "keyword", 4: "keyword" },
-				subLanguage: "xml"
-			}, */
-			GLOBAL_VARIABLES
-			/* ,
-			hljs.COMMENT(
-				/<!--/,
-				/-->/,
-				{ relevance: 10 }
-			),
-			hljs.inherit(hljs.QUOTE_STRING_MODE, {
-				illegal: null,
-				className: null,
-				contains: null,
-				skip: true
-			}),
-			{
-				className: 'symbol',
-				match: /&[a-z]+;|&#[0-9]+;|&#x[a-f0-9]+;/
-			},
-			{
-				className: 'tag',
-				
-				//The lookahead pattern (?=...) ensures that 'begin' only matches
-				//'<style' as a single word, followed by a whitespace or an
-				//ending bracket.
-				
-				begin: /<style(?=\s|>)/,
-				end: />/,
-				keywords: { name: 'style' },
-				contains: [TAG_INTERNALS],
-				starts: {
-					end: /<\/style>/,
-					returnEnd: true,
-					subLanguage: [
-						'css',
-						'xml'
-					]
-				}
-			},
-			{
-				className: 'tag',
-				// See the comment in the <style tag about the lookahead pattern
-				begin: /<script(?=\s|>)/,
-				end: />/,
-				keywords: { name: 'script' },
-				contains: [TAG_INTERNALS],
-				starts: {
-					end: /<\/script>/,
-					returnEnd: true,
-					subLanguage: [
-						'javascript',
-						'handlebars',
-						'xml'
-					]
-				}
-			},
-			// we need this for now for jSX
-			{
-				className: 'tag',
-				begin: /<>|<\/>/
-			},
-			// open tag
-			{
-				className: 'tag',
-				begin: regex.concat(
-					/</,
-					regex.lookahead(regex.concat(
-						TAG_NAME_RE,
-						// <tag/>
-						// <tag>
-						// <tag ...
-						regex.either(/\/>/, />/, /\s/)
-					))
-				),
-				end: /\/?>/,
-				contains: [
-					{
-						className: 'name',
-						begin: TAG_NAME_RE,
-						relevance: 0,
-						starts: TAG_INTERNALS
-					}
-				]
-			},
-			// close tag
-			{
-				className: 'tag',
-				begin: regex.concat(
-					/<\//,
-					regex.lookahead(regex.concat(
-						TAG_NAME_RE, />/
-					))
-				),
-				contains: [
-					{
-						className: 'name',
-						begin: TAG_NAME_RE,
-						relevance: 0
-					},
-					{
-						begin: />/,
-						relevance: 0,
-						endsParent: true
-					}
-				]
-			} */
-		]
-	}
+	const VISUALFORCE = XML_HTML(hljs);
+
+	const VF_CONTAINS = [
+		OPERATORS/* ,
+		{
+			begin: [/</, /apex/, /:/, /page/],
+			beginscope: { 2: "keyword", 4: "keyword" },
+			subLanguage: "xml"
+		}, */
+	];
+
+	const XML_CONTAINS = VISUALFORCE.contains;
+
+	VISUALFORCE.name = 'Visualforce';
+	VISUALFORCE.aliases = ['vf', 'visualforce'];
+	VISUALFORCE.supersetOf = "xml";
+	VISUALFORCE.case_insensitive = true;
+	VISUALFORCE.disableAutodetect = false;
+	VISUALFORCE.ignoreIllegals = false;
+	VISUALFORCE.unicodeRegex = true;
+	VISUALFORCE.illegal = ILLEGALS;
+	VISUALFORCE.contains = XML_CONTAINS.concat(VF_CONTAINS);
+	VISUALFORCE.keywords = KEYWORDS;
+
+	return VISUALFORCE;
 
 }
