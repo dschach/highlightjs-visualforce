@@ -6,7 +6,8 @@
 	"scripts": {
 		"test": "./node_modules/.bin/mocha --reporter spec",
 		"mocha": "mocha test/markup",
-		"npm-patch": "npm version patch && npm publish"
+		"npm-patch": "npm version patch && npm publish",
+		"npm-minor": "npm version minor && npm publish"
 	},
 	"repository": {
 		"type": "git",
