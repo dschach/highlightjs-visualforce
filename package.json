@@ -20,6 +20,12 @@
 		"highlightjs",
 		"highlight.js"
 	],
+	"files": [
+		"assets",
+		"dist",
+		"src",
+		"CHANGELOG.md"
+	],
 	"author": "David Schach (https://github.com/dschach)",
 	"license": "MIT",
 	"bugs": {
