@@ -1,6 +1,6 @@
 {
 	"name": "highlightjs-visualforce",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"description": "Visualforce Markup of Salesforce highlighting plugin for highlight.js",
 	"main": "src/languages/visualforce.js",
 	"scripts": {
