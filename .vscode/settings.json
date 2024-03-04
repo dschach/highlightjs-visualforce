@@ -1,0 +1,8 @@
+{
+	"apexPMD.enableCache": false,
+	"[css]": {
+		  "editor.formatOnSave": false
+	},
+	"prettier.configPath": ".prettierrc",
+	"editor.formatOnSave": true
+}
