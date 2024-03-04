@@ -1,5 +1,5 @@
 {
-	"name": "@highlightjs/highlightjs-visualforce",
+	"name": "@dschach/highlightjs-visualforce",
 	"version": "0.0.1",
 	"description": "Visualforce Markup of Salesforce highlighting plugin for highlight.js",
 	"main": "src/languages/visualforce.js",
