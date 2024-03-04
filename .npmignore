@@ -1,0 +1,8 @@
+*
+
+!dist/**/*
+!package.json
+!src/**/*
+!test/**/*
+!assets/*
+demo
