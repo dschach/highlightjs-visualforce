@@ -1,0 +1,100 @@
+<span class="hljs-comment">&lt;!--
+Action Plans v4
+David Schach 2022
+https://appexchange.salesforce.com/appxListingDetail?listingId=a0N4V00000Gg6NVUAZ
+SPDX-License-Identifier: BSD-3-Clause
+For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+--&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">apex</span><span class="hljs-name">:</span><span class="hljs-name">page</span>
+	<span class="hljs-attr">id</span>=<span class="hljs-string">&quot;thePage&quot;</span>
+	<span class="hljs-attr">contentType</span>=<span class="hljs-string">&quot;text/html&quot;</span>
+	<span class="hljs-attr">applyBodyTag</span>=<span class="hljs-string">&quot;false&quot;</span>
+	<span class="hljs-attr">action</span>=<span class="hljs-string">&quot;{<span class="hljs-punctuation">!</span>onLoad}&quot;</span>&gt;</span>
+	<span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://www.w3.org/2000/svg&quot;</span> <span class="hljs-attr">xmlns:xlink</span>=<span class="hljs-string">&quot;http://www.w3.org/1999/xlink&quot;</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;en&quot;</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+			<span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>
+				<span class="hljs-tag">&lt;<span class="hljs-name">apex</span><span class="hljs-name">:</span><span class="hljs-name">outputText</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;{<span class="hljs-punctuation">!</span><span class="hljs-built_in">$ObjectType.ActionPlan__c.label</span>} - {<span class="hljs-punctuation">!</span><span class="hljs-built_in">$Label.ap_New</span>}&quot;</span> <span class="hljs-attr">rendered</span>=<span class="hljs-string">&quot;{<span class="hljs-punctuation">!</span>ActionPlan__c.Id <span class="hljs-operator">==</span> <span class="hljs-literal">null</span>}&quot;</span> /&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">apex</span><span class="hljs-name">:</span><span class="hljs-name">outputText</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;{<span class="hljs-punctuation">!</span>ActionPlan__c.Name} -
+				{<span class="hljs-punctuation">!</span><span class="hljs-built_in">$Label.ap_Edit</span>}&quot;</span> <span class="hljs-attr">rendered</span>=<span class="hljs-string">&quot;{<span class="hljs-punctuation">!</span>ActionPlan__c.Id <span class="hljs-operator">!=</span> <span class="hljs-literal">null</span>}&quot;</span> /&gt;</span>
+			<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+			<span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">http-equiv</span>=<span class="hljs-string">&quot;x-ua-compatible&quot;</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;ie=edge&quot;</span> /&gt;</span>
+			<span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;viewport&quot;</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;width=device-width, initial-scale=1&quot;</span> /&gt;</span>
+
+			<span class="hljs-tag">&lt;<span class="hljs-name">apex</span><span class="hljs-name">:</span><span class="hljs-name">includeScript</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;{<span class="hljs-punctuation">!</span><span class="hljs-title function_ invoke__">URLFOR</span>(<span class="hljs-built_in">$Resource.ActionPlan_Resources</span>, &#x27;<span class="hljs-subst">js/jquery-3.6.0.min.js</span>&#x27;)}&quot;</span> /&gt;</span>
+			<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript">
+				<span class="hljs-keyword">var</span> j$ = jQuery.<span class="hljs-title function_">noConflict</span>();
+				<span class="hljs-title function_">j$</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) {
+					<span class="hljs-title function_">checkSkipWeekend</span>(<span class="hljs-title function_">j$</span>(<span class="hljs-string">&#x27;[id$=skipWeekendCheckbox]&#x27;</span>).<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;id&#x27;</span>), <span class="hljs-title function_">j$</span>(<span class="hljs-string">&#x27;[id$=skipDayPicklist]&#x27;</span>).<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;id&#x27;</span>));
+					<span class="hljs-title function_">checkAllDependent</span>(<span class="hljs-string">&#x27;{!JSENCODE($Label.ap_ItselfDependencyError)}&#x27;</span>, <span class="hljs-string">&#x27;{!$Label.ap_Errors_Cyclic_Dependency_Found}&#x27;</span>);
+					<span class="hljs-title function_">j$</span>(<span class="hljs-string">&#x27;.helpOrb&#x27;</span>).<span class="hljs-title function_">css</span>({ <span class="hljs-attr">width</span>: <span class="hljs-string">&#x27;12px&#x27;</span>, <span class="hljs-attr">height</span>: <span class="hljs-string">&#x27;12px&#x27;</span> });
+					<span class="hljs-title function_">showErrors</span>();
+					<span class="hljs-title function_">initSelectors</span>();
+					<span class="hljs-title function_">j$</span>(<span class="hljs-string">&#x27;td [Id*=taskTable]&#x27;</span>).<span class="hljs-title function_">css</span>(<span class="hljs-string">&#x27;vertical-align&#x27;</span>, <span class="hljs-string">&#x27;middle&#x27;</span>);
+					<span class="hljs-title function_">checkReminderPicklists</span>();
+				});
+
+				<span class="hljs-keyword">function</span> <span class="hljs-title function_">setSelectWidth</span>(<span class="hljs-params"></span>) {
+					<span class="hljs-keyword">var</span> yardstick = <span class="hljs-title function_">j$</span>(<span class="hljs-string">&#x27;&lt;select&gt;&lt;option&gt;&#x27;</span> + <span class="hljs-title function_">j$</span>(<span class="hljs-variable language_">this</span>).<span class="hljs-title function_">val</span>() + <span class="hljs-string">&#x27;&lt;/option&gt;&lt;/select&gt;&#x27;</span>);
+					<span class="hljs-keyword">if</span> (<span class="hljs-title function_">j$</span>(<span class="hljs-variable language_">this</span>).<span class="hljs-title function_">val</span>() == <span class="hljs-literal">null</span>) {
+						<span class="hljs-comment">// prettier-ignore</span>
+						<span class="hljs-keyword">var</span> labelNone = <span class="hljs-string">&quot;{!JSENCODE($Label.ap_None)}&quot;</span>;
+						yardstick = <span class="hljs-string">&#x27;&lt;select&gt;&lt;option&gt;&#x27;</span> + <span class="hljs-string">&#x27;--&#x27;</span> + labelNone + <span class="hljs-string">&#x27;--&#x27;</span> + <span class="hljs-string">&#x27;&lt;/option&gt;&lt;/select&gt;&#x27;</span>;
+					}
+					yardstick.<span class="hljs-title function_">css</span>({ <span class="hljs-attr">display</span>: <span class="hljs-string">&#x27;none&#x27;</span> }).<span class="hljs-title function_">appendTo</span>(<span class="hljs-string">&#x27;body&#x27;</span>);
+					<span class="hljs-keyword">var</span> fudge = <span class="hljs-number">1.03</span>; <span class="hljs-comment">// need a little more to avoid clipping for some reason</span>
+					<span class="hljs-title function_">j$</span>(<span class="hljs-variable language_">this</span>).<span class="hljs-title function_">width</span>(fudge * yardstick.<span class="hljs-title function_">width</span>());
+					yardstick.<span class="hljs-title function_">remove</span>();
+				}
+
+				<span class="hljs-keyword">function</span> <span class="hljs-title function_">initSelectors</span>(<span class="hljs-params"></span>) {
+					<span class="hljs-title function_">j$</span>(<span class="hljs-string">&#x27;[Id$=relatedObjLookup]&#x27;</span>)
+						.<span class="hljs-title function_">each</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) {
+							setSelectWidth.<span class="hljs-title function_">apply</span>(<span class="hljs-variable language_">this</span>);
+						})
+						.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;change&#x27;</span>, <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) {
+							setSelectWidth.<span class="hljs-title function_">apply</span>(<span class="hljs-variable language_">this</span>);
+						});
+					<span class="hljs-title function_">j$</span>(<span class="hljs-string">&#x27;.resize&#x27;</span>)
+						.<span class="hljs-title function_">each</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) {
+							setSelectWidth.<span class="hljs-title function_">apply</span>(<span class="hljs-variable language_">this</span>);
+						})
+						.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;change&#x27;</span>, <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) {
+							setSelectWidth.<span class="hljs-title function_">apply</span>(<span class="hljs-variable language_">this</span>);
+						});
+				}
+			</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+			<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span>&gt;</span><span class="language-javascript">
+				<span class="hljs-keyword">var</span> __sfdcSessionId = <span class="hljs-string">&#x27;{!GETSESSIONID()}&#x27;</span>;
+			</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+			<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;../../soap/ajax/54.0/connection.js&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+			<span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="language-css">
+				<span class="hljs-selector-tag">input</span><span class="hljs-selector-class">.errorBorder</span> {
+					<span class="hljs-attribute">border</span>: <span class="hljs-number">2px</span> solid <span class="hljs-number">#cc0000</span>;
+				}
+			</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
+			<span class="hljs-tag">&lt;<span class="hljs-name">apex</span><span class="hljs-name">:</span><span class="hljs-name">variable</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;{<span class="hljs-punctuation">!</span><span class="hljs-built_in">$User.UIThemeDisplayed</span> <span class="hljs-operator">==</span> &#x27;<span class="hljs-subst">Theme4d</span>&#x27; <span class="hljs-operator">||</span> <span class="hljs-built_in">$User.UIThemeDisplayed</span> <span class="hljs-operator">==</span> &#x27;<span class="hljs-subst">Theme4u</span>&#x27;}&quot;</span> <span class="hljs-attr">var</span>=<span class="hljs-string">&quot;lex&quot;</span> /&gt;</span>
+			<span class="hljs-tag">&lt;<span class="hljs-name">apex</span><span class="hljs-name">:</span><span class="hljs-name">slds</span> <span class="hljs-attr">rendered</span>=<span class="hljs-string">&quot;{<span class="hljs-punctuation">!</span>lex}&quot;</span> /&gt;</span>
+		<span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+
+		<span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+			<span class="hljs-tag">&lt;<span class="hljs-name">c</span><span class="hljs-name">:</span><span class="hljs-name">APSectionHeader</span> <span class="hljs-attr">sObjType</span>=<span class="hljs-string">&quot;ActionPlan__c&quot;</span> <span class="hljs-attr">subtitle</span>=<span class="hljs-string">&quot;{<span class="hljs-punctuation">!</span><span class="hljs-built_in">$ObjectType.ActionPlan__c.label</span>}&quot;</span> <span class="hljs-attr">title</span>=<span class="hljs-string">&quot;{<span class="hljs-punctuation">!</span>subtitle}&quot;</span> <span class="hljs-attr">rendered</span>=<span class="hljs-string">&quot;{<span class="hljs-punctuation">!</span>!lex}&quot;</span>/&gt;</span>
+		<span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span>&gt;</span><span class="language-javascript">
+			<span class="hljs-keyword">var</span> j$ = jQuery.<span class="hljs-title function_">noConflict</span>();
+
+			<span class="hljs-title function_">j$</span>(<span class="hljs-variable language_">document</span>).<span class="hljs-title function_">ready</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) {
+				<span class="hljs-keyword">if</span> (<span class="hljs-string">&#x27;{!purchasedLicenses}&#x27;</span> == <span class="hljs-string">&#x27;-1&#x27;</span>) {
+					<span class="hljs-title function_">j$</span>(<span class="hljs-string">&#x27;#config-tab-li-2&#x27;</span>).<span class="hljs-title function_">hide</span>();
+				}
+				<span class="hljs-keyword">if</span> (<span class="hljs-string">&#x27;{!JSENCODE($CurrentPage.parameters.debug)}&#x27;</span> == <span class="hljs-string">&#x27;1&#x27;</span>) {
+					<span class="hljs-title function_">j$</span>(<span class="hljs-string">&#x27;#config-tab-li-2&#x27;</span>).<span class="hljs-title function_">show</span>();
+				}
+			});
+			<span class="hljs-keyword">function</span> <span class="hljs-title function_">setCurrentPageName</span>(<span class="hljs-params"></span>) {
+				<span class="hljs-keyword">var</span> currentPage = <span class="hljs-string">&#x27;{!JSENCODE($CurrentPage.Name)}&#x27;</span>;
+				<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;current page name = &#x27;</span> + currentPage);
+				<span class="hljs-comment">//document.getElementsByClassName(&quot;currentVFPageName&quot;)[0].value = currentPage;</span>
+			}
+			<span class="hljs-title function_">setCurrentPageName</span>();
+		</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+	<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">apex:page</span>&gt;</span>

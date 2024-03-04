@@ -10,7 +10,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/highlightjs/highlightjs-visualforce.git"
+		"url": "git://github.com/dschach/highlightjs-visualforce.git"
 	},
 	"keywords": [
 		"Visualforce",
@@ -22,9 +22,9 @@
 	"author": "David Schach (https://github.com/dschach)",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/highlightjs/highlightjs-visualforce/issues"
+		"url": "https://github.com/dschach/highlightjs-visualforce/issues"
 	},
-	"homepage": "https://github.com/highlightjs/highlightjs-visualforce#readme",
+	"homepage": "https://github.com/dschach/highlightjs-visualforce#readme",
 	"devDependencies": {
 		"highlight.js": "^11.9.0",
 		"minimist": "^1.2.8",
